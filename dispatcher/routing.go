@@ -3,9 +3,9 @@ package dispatcher
 import(
   "net/http"
   "reflect"
-  "id_generator/middlewares"
-  "id_generator/context"
-  "id_generator/controllers"
+  "github.com/id_generator/middlewares"
+  "github.com/id_generator/context"
+  "github.com/id_generator/controllers"
   // "fmt"
 )
 type RouteServe struct{

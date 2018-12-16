@@ -2,7 +2,7 @@ package app
 
 import(
   "net/http"
-  "id_generator/dispatcher"
+  "github.com/id_generator/dispatcher"
 )
 
 var App *Application

@@ -4,7 +4,7 @@ import (
         "fmt"
         "net/http"
         "strings"
-        "id_generator/middlewares"
+        "github.com/id_generator/middlewares"
         "reflect"
        )
 

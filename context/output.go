@@ -1,7 +1,7 @@
 package context
 
 import(
-  "id_generator/middlewares"
+  "github.com/id_generator/middlewares"
 )
 
 const (

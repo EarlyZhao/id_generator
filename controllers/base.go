@@ -2,7 +2,7 @@ package controllers
 
 import(
   "net/http"
-  "id_generator/context"
+  "github.com/id_generator/context"
   "encoding/json"
   "fmt"
 )

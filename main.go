@@ -2,8 +2,8 @@ package main
 
 
 import(
-        "id_generator/app"
-        _ "id_generator/routes"
+        "github.com/id_generator/app"
+        _ "github.com/id_generator/routes"
         "flag"
         "fmt"
       )
