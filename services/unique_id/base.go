@@ -1,5 +1,7 @@
 package unique_id
 
+// generate ID uniquely and increasingly
+// the ID is an integer that created from database
 var House *WareHouse
 
 func init(){
@@ -14,7 +16,7 @@ func init(){
 
 }
 
-func GetUniqueId(business string) (int, error) {
+func GetUniqueId(business string) (uint64, error) {
   // acquire a id from data set
   id, err := House.Acquire(business)
   return id, err
