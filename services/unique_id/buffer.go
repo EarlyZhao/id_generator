@@ -15,19 +15,19 @@ type Buffer struct{
 
   Num int // the serial number
   Fulling bool // if getting the buffer full
+  Initialized bool
   mutex sync.Mutex // Lock sync.
 }
 
 
 func NewBuffer(index int) *Buffer{
-  buffer := &Buffer{Num: index, Fulling: false, }
+  buffer := &Buffer{Num: index, Fulling: false, Initialized: false,}
   buffer.GetBufferFull()
   return buffer
 }
 
 func (b *Buffer) ReleaseId() (id uint64, duration uint64, remaining uint64){
-  // need a lock
-  // var id, duration, remaining int
+  // need a lock, or executed in a lock
   if b.Current < b.End{
     id = b.Current
 
@@ -37,12 +37,16 @@ func (b *Buffer) ReleaseId() (id uint64, duration uint64, remaining uint64){
     duration = b.Duration
     remaining =  b.Cap
 
+  }else{ // Buffer was empty
+    // CheckBufferCondition() will avoid this situation
   }
 
   if b.timeToFull(){
     go b.GetBufferFull()
   }else{ // buffer is not empty
     if b.Fulling{
+      // when buffer began to ReleaseId(),
+      // make it possible for goroutine to full the buffer later
       b.Fulling = false
     }
   }
@@ -51,19 +55,31 @@ func (b *Buffer) ReleaseId() (id uint64, duration uint64, remaining uint64){
 }
 
 func (b *Buffer) GetBufferFull(){
-  // for test
+  // redundancy check, reduce mutex grabbing as much as possible
+  if b.Fulling{  // the buffer is full now
+    return
+  }
+
   b.mutex.Lock()
   if b.Fulling == false{
-    b.Fulling = true
 
-    b.Start = 10000
-    b.End = 20000
+    if b.Initialized {
+      b.Start = b.End
+      b.End = b.End + b.Duration
+    }else{
+      b.Start = 10
+      b.End = 20
+      b.Duration = 10
+      b.Initialized = true
+    }
+
     b.Current = b.Start
-    b.Duration = 10000
     b.Cap = b.End - b.Current
-
-    // b.Fulling = false
   }
+  // ensure just one goroutine to full buffer,
+  // until the buffer began to ReleaseId().
+  // it also represented the buffer is fulling over
+  b.Fulling = true
   b.mutex.Unlock()
 }
 

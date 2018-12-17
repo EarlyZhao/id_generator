@@ -19,9 +19,6 @@ func (w *WareHouse) Acquire(business string) (uint64, error){
 }
 
 func (w *WareHouse) SetHouse(business string,  set*IdSet){
-  // if w.HouseMap == nil{
-  //  w.HouseMap = make(map[string]*IdSet)
-  // }
   w.HouseMap[business] = set
 }
 
