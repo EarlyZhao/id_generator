@@ -13,15 +13,21 @@ func main() {
   var port = flag.String("port", "1314", "the Port bind on")
   var log_path = flag.String("log_path", "/var/log/id_generator.log", "the log file path")
   var pid_path = flag.String("pid_path", "/tmp/pids/id_generator.pid", "the pid file path")
+  var config_path = flag.String("config_path", "", "the config file path")
   var daemon = flag.Bool("daemon", false, "run as daemon")
 
   flag.Parse()
 
-  config := make(map[string]interface{})
+  config := make(map[interface{}]interface{})
 
   config["addr"] = *addr
   config["port"] = *port
   config["daemon"] = *daemon
+  config["conf_path"] = *config_path
+
+  if *config_path == ""{
+    panic("conf_path must be present")
+  }
 
   if config["daemon"] == true{
     config["log_path"] = *log_path
@@ -34,6 +40,6 @@ func main() {
   }
   fmt.Println("----------")
 
-  app.WriteServerConfig(config)
+  app.Ready(config)
   app.Run()
 }

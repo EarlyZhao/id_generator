@@ -5,18 +5,24 @@ import(
   "reflect"
   "github.com/id_generator/middlewares"
   "github.com/id_generator/context"
-  "github.com/id_generator/controllers"
-  // "fmt"
+  "fmt"
 )
 type RouteServe struct{
   // middlewares.MiddlewareBridge
   routes *Tree
 }
 
-type Context struct {
-  Params map[string][]string
-  Request *http.Request
+type ControllerInterface interface{
+  Init(context *context.Context)
+  Serve()
+  Done()
+  RecoverFunc(context *context.Context)
 }
+
+// type Context struct {
+//   Params map[string][]string
+//   Request *http.Request
+// }
 
 func (t * RouteServe) MiddlewareCall(mr *middlewares.MiddlewareResponse, r *http.Request){
   method := r.Method
@@ -33,24 +39,26 @@ func (t * RouteServe) MiddlewareCall(mr *middlewares.MiddlewareResponse, r *http
   for key, value := range(params){
     httpParams[key] = []string{value}
   }
-
+  fmt.Println(httpParams)
   context := context.NewContext()
   context.Input.Params = httpParams
   context.Input.Request = r
   context.Output.Response = mr
 
-  var execController controllers.ControllerInterface
+
+  var execController ControllerInterface
   // handlerType := reflect.ValueOf(handler).Elem().Type()
   handlerValue := reflect.ValueOf(handler)
   handlerType := reflect.Indirect(handlerValue).Type()
 
   handlerController := reflect.New(handlerType)
-  execController = handlerController.Interface().(controllers.ControllerInterface)
+  execController = handlerController.Interface().(ControllerInterface)
   execController.Init(context)
-    // code, headers, body := handler.Serve(httpParams, r)
-  // execController.Serve(context)
+
   rv := reflect.ValueOf(execController)
   handleMethod := rv.MethodByName(controllerMethod)
+
+  defer execController.RecoverFunc(context)
   handleMethod.Call([]reflect.Value{})
   execController.Done()
 

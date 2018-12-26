@@ -42,7 +42,7 @@ func (mr *MiddlewareResponse) WriteResponse(rw http.ResponseWriter){
 }
 
 func (mr *MiddlewareResponse) SetBody(data []byte){
-  mr.Body = append(mr.Body, data...)
+  mr.Body = data
 }
 
 func NewMiddlewareResponse() *MiddlewareResponse{

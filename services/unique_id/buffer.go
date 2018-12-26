@@ -17,13 +17,28 @@ type Buffer struct{
   Fulling bool // if getting the buffer full
   Initialized bool
   mutex sync.Mutex // Lock sync.
+
+  BufferSource interface{}
+}
+
+type BufferInterface interface{
+  Duration() uint64
+  StartAt() uint64
+  EndAT() uint64
+  Update()
 }
 
 
-func NewBuffer(index int) *Buffer{
+func NewBuffer(index int, s interface{}) *Buffer{
   buffer := &Buffer{Num: index, Fulling: false, Initialized: false,}
+  buffer.SetSource(s)
   buffer.GetBufferFull()
   return buffer
+}
+
+
+func (b *Buffer) SetSource( s interface{}){
+  b.BufferSource = s
 }
 
 func (b *Buffer) ReleaseId() (id uint64, duration uint64, remaining uint64){

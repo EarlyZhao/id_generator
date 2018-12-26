@@ -4,7 +4,7 @@ package middlewares
 
 import(
       "time"
-    "net/http"
+      "net/http"
     )
 
 type ServeTime struct{

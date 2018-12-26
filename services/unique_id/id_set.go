@@ -7,19 +7,21 @@ import(
 type IdSet struct{
   Set []*Buffer
 
-  // Count defualt 1, is the max index of Set
-  // len(Set) = Count + 1
-  Count int
+  Count int // len(Set)
+  SetIndexMax int // Count - 1
 
   Index int
   mutex sync.Mutex
 
 }
 
-func GetNewIdSet() *IdSet{
-  set := &IdSet{Count: 1, Index: 0, Set: []*Buffer{} }
-  for i := 0; i <= set.Count; i++{
-    set.Set = append(set.Set, NewBuffer(i))
+func GetNewIdSet(count int, bufferSource interface{}) *IdSet{
+  if count < 2{
+    count = 2
+  }
+  set := &IdSet{Count: count, SetIndexMax: count - 1, Index: 0, Set: []*Buffer{} }
+  for i := 0; i < set.Count; i++{
+    set.Set = append(set.Set, NewBuffer(i, bufferSource))
   }
 
   return set
@@ -39,7 +41,7 @@ func (i *IdSet) CheckBufferCondition(duration uint64, remain uint64) {
   if ifSwitching(duration, remain) {
     // need a lock, not thread safe
     // Switch the Index of Set, to make Current() access next Buffer
-    if i.Index == i.Count {
+    if i.Index == i.SetIndexMax {
       i.Index = 0
     }else{
       i.Index += 1
