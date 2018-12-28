@@ -3,6 +3,7 @@ package controllers
 import(
   "github.com/id_generator/models"
   "fmt"
+  "github.com/id_generator/helpers"
 )
 
 type ListController struct{
@@ -24,5 +25,9 @@ func (l *ListController) Create(){
     EndedAT: start_at + interval,
   }
 
-  models.DB.Save(list)
+  if err := models.DB.Save(list).Error; err != nil{
+    l.Data["json"] = helpers.NewErrorRet(1002, err.Error())
+  }else{
+    l.Data["json"] = helpers.NewSuccessRet(l)
+  }
 }

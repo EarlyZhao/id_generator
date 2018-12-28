@@ -11,7 +11,7 @@ type ParamsError struct{
 }
 
 func WriteParamsErrorData(msg string) []byte{
-  sysError := sys_errors.NewSysError(msg)
+  sysError := sys_errors.NewSysError(1001, msg)
   data, err := sysError.JsonString()
   if err == nil{
     return data

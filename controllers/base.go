@@ -86,7 +86,7 @@ func (c *Controller) MustGetInt(key string, msg string) uint64{
   return ret
 }
 
-func (c *Controller)RaiseParamsError(msg string){
+func (c *Controller) RaiseParamsError(msg string){
   data := helpers.WriteParamsErrorData(msg)
   c.SetJsonBody(data)
 
