@@ -15,16 +15,30 @@ type IdSet struct{
 
 }
 
-func GetNewIdSet(count int, bufferSource interface{}) *IdSet{
+func GetNewIdSet(count int, source interface{}) *IdSet{
   if count < 2{
     count = 2
   }
   set := &IdSet{Count: count, SetIndexMax: count - 1, Index: 0, Set: []*Buffer{} }
-  for i := 0; i < set.Count; i++{
-    set.Set = append(set.Set, NewBuffer(i, bufferSource))
-  }
+
+  set.fullSet(source)
 
   return set
+}
+
+func (i *IdSet) Reload(count int, source interface{}){
+  i.mutex.Lock()
+  i.Count = count
+  i.Set = []*Buffer{}
+
+  i.fullSet(source)
+  i.mutex.Unlock()
+}
+
+func (i *IdSet) fullSet(source interface{}){
+  for j := 0; j < i.Count; j++{
+    i.Set = append(i.Set, NewBuffer(j, source))
+  }
 }
 
 func (i *IdSet) GetId() uint64{

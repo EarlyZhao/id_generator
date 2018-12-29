@@ -3,6 +3,7 @@ package models
 import(
   "time"
   "github.com/jinzhu/gorm"
+  // "fmt"
 )
 
 type List struct{
@@ -57,6 +58,9 @@ func (l *List) EndAT() uint64{
 
 func (l *List) Update(){
   tx := DB.Begin()
-  DB.Model(l).UpdateColumn("EndedAT", gorm.Expr("EndedAT + ?", l.Interval))
+  if err := DB.Model(l).Update("ended_at", gorm.Expr("ended_at + ?", l.Interval)).Error; err != nil{
+    panic(err)
+  }
+  DB.Where("id = ?", l.ID).Find(l)
   tx.Commit()
 }

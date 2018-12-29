@@ -3,6 +3,8 @@ package unique_id
 
 import(
   "sync"
+  "fmt"
+  "time"
 )
 
 type Buffer struct{
@@ -18,7 +20,7 @@ type Buffer struct{
   Initialized bool
   mutex sync.Mutex // Lock sync.
 
-  BufferSource interface{}
+  BufferSource BufferInterface
 }
 
 type BufferInterface interface{
@@ -26,7 +28,7 @@ type BufferInterface interface{
   StartAt() uint64
   EndAT() uint64
   Update()
-  Usable()
+  Usable() bool
 }
 
 
@@ -39,7 +41,7 @@ func NewBuffer(index int, s interface{}) *Buffer{
 
 
 func (b *Buffer) SetSource( s interface{}){
-  b.BufferSource = s
+  b.BufferSource = s.(BufferInterface)
 }
 
 func (b *Buffer) ReleaseId() (id uint64, duration uint64, remaining uint64){
@@ -72,25 +74,27 @@ func (b *Buffer) ReleaseId() (id uint64, duration uint64, remaining uint64){
 
 func (b *Buffer) GetBufferFull(){
   // redundancy check, reduce mutex grabbing as much as possible
+
   if b.Fulling{  // the buffer is full now
     return
   }
 
   b.mutex.Lock()
   if b.Fulling == false{
+    b.BufferSource.Update()
 
-    if b.Initialized {
-      b.Start = b.End
-      b.End = b.End + b.Duration
-    }else{
-      b.Start = 10
-      b.End = 20
-      b.Duration = 10
-      b.Initialized = true
-    }
 
-    b.Current = b.Start
+    b.Start = b.BufferSource.StartAt()
+    b.Duration = b.BufferSource.Duration()
+
+    b.End = b.BufferSource.EndAT()
+    b.Current = b.End - b.Duration
+
+    b.Initialized = true
+
+
     b.Cap = b.End - b.Current
+    fmt.Println("GetBufferFull At:", time.Now().String(), b.Current, b.End)
   }
   // ensure just one goroutine to full buffer,
   // until the buffer began to ReleaseId().

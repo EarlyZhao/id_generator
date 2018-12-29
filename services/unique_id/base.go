@@ -19,10 +19,24 @@ func initWareHouse(){
   // create id set for every business
   House = NewWareHouse()
   for _, list := range(lists){
-    business_type := list.BusinessType
-    count := 2 // todo: from config file
-    set := GetNewIdSet(count, list)
-    House.SetHouse(business_type, set)
+    set := GetNewIdSet(2, list)
+    House.AddNewToWareHouse(list.BusinessType, set)
+  }
+}
+
+func UpdateWareHouse(business_type string){
+  list := &models.List{}
+
+  models.DB.Where("business_type = ?", business_type).First(list)
+  if list.Usable(){
+    if set, ok := House.HouseMap[business_type];ok{
+      set.Reload(2, list)
+    }else{
+      set = GetNewIdSet(2, list)
+      House.AddNewToWareHouse(list.BusinessType, set)
+    }
+  }else{
+    House.RemoveToWareHouse(list.BusinessType)
   }
 }
 
