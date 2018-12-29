@@ -6,22 +6,24 @@ import(
 )
 
 type List struct{
-  ID int `gorm:"AUTO_INCREMENT;PRIMARY_KEY;not null"`
+  ID int `gorm:"AUTO_INCREMENT;PRIMARY_KEY;not null" json:"id"`
 
-  BusinessType string `gorm:"unique;not null"`
-  BusinessDesc string
+  BusinessType string `gorm:"unique;not null;" json:"business_type"`
+  BusinessDesc string `json:"business_desc"`
 
-  Interval uint64 `gorm:"DEFAULT:10000" sql:"type:bigint`
-  StartedAt uint64  `gorm:"DEFAULT:1" sql:"type:bigint"`
-  EndedAT uint64  `sql:"type:bigint"`
+  Interval uint64 `gorm:"DEFAULT:10000;" sql:"type:bigint;" json:"interval"`
+  StartedAt uint64  `gorm:"DEFAULT:1;" sql:"type:bigint;" json:"started_at"`
+  EndedAT uint64  `sql:"type:bigint;" json:"ended_at"`
 
   UpdatedAt  time.Time
+  CreatedAt  time.Time
 
+  Enable bool `gorm:"DEFAULT:1;" json:"enable"`
 }
 
 func GetAllList() []*List{
   lists := make([]*List, 1, 5)
-  DB.Find(&lists)
+  DB.Where("Enable = ?", true).Find(&lists)
 
   // var types []string
 
@@ -30,6 +32,15 @@ func GetAllList() []*List{
   // }
 
   return lists
+}
+
+func (l *List) Usable() bool{
+  if DB.NewRecord(l){
+    return false
+  }
+
+  DB.Where("id = ?", l.ID).First(l)
+  return l.Enable == true
 }
 
 func (l *List) Duration() uint64{

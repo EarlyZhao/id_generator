@@ -23,11 +23,12 @@ func (l *ListController) Create(){
     Interval: interval,
     StartedAt: start_at,
     EndedAT: start_at + interval,
+    Enable: true,
   }
 
   if err := models.DB.Save(list).Error; err != nil{
     l.Data["json"] = helpers.NewErrorRet(1002, err.Error())
   }else{
-    l.Data["json"] = helpers.NewSuccessRet(l)
+    l.Data["json"] = helpers.NewSuccessRet(list)
   }
 }

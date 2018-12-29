@@ -7,7 +7,7 @@ import(
   "fmt"
   "github.com/id_generator/sys_errors"
   "github.com/id_generator/helpers"
-  "strconv"
+  // "strconv"
 )
 
 // func (h *BaseHandler) AddHeader(key string, value interface{}){
@@ -63,6 +63,7 @@ func (c *Controller) RecoverFunc(context *context.Context){
 
 func (c *Controller) MustGetString(key string, msg string) string{
   value := c.Context.Input.GetString(key, "")
+  fmt.Println(value)
   if value != ""{
     return value
   }
@@ -73,13 +74,10 @@ func (c *Controller) MustGetString(key string, msg string) string{
 }
 
 func (c *Controller) MustGetInt(key string, msg string) uint64{
-  value := c.Context.Input.GetString(key, "")
+  value := c.Context.Input.GetUint(key, 0)
   var ret uint64
-  if value != ""{
-    ret, err := strconv.ParseUint(value, 10, 64)
-    if err == nil{
-      return ret
-    }
+  if value != 0{
+    return value
   }
 
   c.RaiseParamsError(msg)

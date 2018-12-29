@@ -6,6 +6,9 @@ import(
   "github.com/id_generator/middlewares"
   "github.com/id_generator/context"
   "fmt"
+  "strings"
+  "io/ioutil"
+  "encoding/json"
 )
 type RouteServe struct{
   // middlewares.MiddlewareBridge
@@ -35,10 +38,33 @@ func (t * RouteServe) MiddlewareCall(mr *middlewares.MiddlewareResponse, r *http
   }
 
   //hr := &HandlerRequest{Params: r.URL.Query(), Request: r}
-  httpParams := r.URL.Query()
-  for key, value := range(params){
-    httpParams[key] = []string{value}
+  httpParams := make(context.InputParams)
+
+  for key, value := range(r.URL.Query()){
+    httpParams[key] = value
   }
+  for key, value := range(params){
+    httpParams[key] = value
+  }
+
+  method = strings.ToUpper(method) // ensure as upper
+  // the value from Body has higher priority than URL query
+  if method == "POST" || method == "PUT" || method == "PATCH"{
+    body, err := ioutil.ReadAll(r.Body)
+    if err != nil{}
+    fmt.Println("Unmarshal")
+    bodyData := make(context.InputParams)
+    jsonErr := json.Unmarshal(body, &bodyData)
+    if jsonErr == nil{
+      fmt.Println("Unmarshalsss")
+      for key_post, value_post := range(bodyData){
+        httpParams[key_post] = value_post
+      }
+    }else{
+      fmt.Println(jsonErr)
+    }
+  }
+
   fmt.Println(httpParams)
   context := context.NewContext()
   context.Input.Params = httpParams

@@ -26,6 +26,7 @@ type BufferInterface interface{
   StartAt() uint64
   EndAT() uint64
   Update()
+  Usable()
 }
 
 
