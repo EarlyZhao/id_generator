@@ -52,7 +52,7 @@ func (t * RouteServe) MiddlewareCall(mr *middlewares.MiddlewareResponse, r *http
   if method == "POST" || method == "PUT" || method == "PATCH"{
     body, err := ioutil.ReadAll(r.Body)
     if err != nil{}
-    fmt.Println("Unmarshal")
+    fmt.Println(string(body))
     bodyData := make(context.InputParams)
     jsonErr := json.Unmarshal(body, &bodyData)
     if jsonErr == nil{

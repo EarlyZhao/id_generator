@@ -6,9 +6,11 @@ import(
         _ "github.com/id_generator/routes"
         "flag"
         "fmt"
+        "runtime"
       )
 
 func main() {
+  // runtime.GOMAXPROCS(5)
   var addr = flag.String("addr", "127.0.0.1", "the IP listen to")
   var port = flag.String("port", "1314", "the Port bind on")
   var log_path = flag.String("log_path", "/var/log/id_generator.log", "the log file path")
