@@ -22,11 +22,6 @@ type ControllerInterface interface{
   RecoverFunc(context *context.Context)
 }
 
-// type Context struct {
-//   Params map[string][]string
-//   Request *http.Request
-// }
-
 func (t * RouteServe) MiddlewareCall(mr *middlewares.MiddlewareResponse, r *http.Request){
   method := r.Method
   path := r.URL.Path
@@ -37,7 +32,6 @@ func (t * RouteServe) MiddlewareCall(mr *middlewares.MiddlewareResponse, r *http
     return
   }
 
-  //hr := &HandlerRequest{Params: r.URL.Query(), Request: r}
   httpParams := make(context.InputParams)
 
   for key, value := range(r.URL.Query()){
@@ -71,9 +65,7 @@ func (t * RouteServe) MiddlewareCall(mr *middlewares.MiddlewareResponse, r *http
   context.Input.Request = r
   context.Output.Response = mr
 
-
   var execController ControllerInterface
-  // handlerType := reflect.ValueOf(handler).Elem().Type()
   handlerValue := reflect.ValueOf(handler)
   handlerType := reflect.Indirect(handlerValue).Type()
 
