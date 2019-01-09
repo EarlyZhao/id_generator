@@ -28,6 +28,11 @@ func (mr *MiddlewareResponse) Res404(){
   mr.Code = 404
 }
 
+func (mr *MiddlewareResponse) Res500(msg string){
+  mr.Code = 500
+  mr.SetBody([]byte(msg))
+}
+
 func (mr *MiddlewareResponse) WriteResponse(rw http.ResponseWriter){
   for key , value := range(mr.Headers){
     rw.Header().Add(key, value)

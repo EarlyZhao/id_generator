@@ -35,12 +35,24 @@ func (l *ListController) Create(){
   unique_id.UpdateWareHouse(list.BusinessType)
 }
 
+func (l *ListController) Index(){
+  var lists []*models.List
+  disabled := l.Context.Input.GetString("disabled", "0")
+  if disabled == "1"{
+    lists = models.GetAllListDisabled()
+  }else{
+    lists = models.GetAllList()
+  }
+
+  l.Data["json"] = helpers.NewSuccessRet(lists)
+}
+
 func (l *ListController) Update(){
   var ret string
   business_type := l.MustGetString("business_type", "business_type Must be valid")
   business_desc := l.Context.Input.GetString("business_desc", "")
 
-  enable := l.MustGetString("enable", "start_at: need a number")
+  enable := l.MustGetString("enable", "start_at: need a number of string")
   list := &models.List{}
   models.DB.Where("business_type = ?", business_type).First(list)
   // disable
@@ -75,7 +87,7 @@ func (l *ListController) Update(){
       list.Interval = interval
     }
 
-    if business_desc == ""{
+    if business_desc != ""{
       list.BusinessDesc = business_desc
     }
 

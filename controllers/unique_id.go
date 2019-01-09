@@ -2,6 +2,7 @@ package controllers
 
 import(
     "github.com/id_generator/services/unique_id"
+    "github.com/id_generator/helpers"
 )
 
 type UniqueIdController struct{
@@ -17,16 +18,14 @@ func (u *UniqueIdController) Create(){
   ret := make(map[string]interface{})
 
   if err == nil{
+    ret["business"] = business
     ret["id"] = id
-    ret["status"] = 0
+    u.Data["json"] = helpers.NewSuccessRet(ret)
   }else{
-    ret["msg"] = err.Error()
-    ret["status"] = 1
+    u.Data["json"] = helpers.NewErrorRet(1004, err.Error())
+    return
   }
 
-  ret["business"] = business
-
-  u.Data["json"] = ret
 }
 
 func (u *UniqueIdController) Update(){

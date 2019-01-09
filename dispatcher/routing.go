@@ -56,6 +56,8 @@ func (t * RouteServe) MiddlewareCall(mr *middlewares.MiddlewareResponse, r *http
       }
     }else{
       fmt.Println(jsonErr)
+      mr.Res500(jsonErr.Error())
+      return
     }
   }
 

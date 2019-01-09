@@ -26,11 +26,12 @@ func GetAllList() []*List{
   lists := make([]*List, 1, 5)
   DB.Where("Enable = ?", true).Find(&lists)
 
-  // var types []string
+  return lists
+}
 
-  // for _, list := range(lists){
-  //  types = append(types, list.BusinessType)
-  // }
+func GetAllListDisabled() []*List{
+  lists := make([]*List, 1, 5)
+  DB.Where("Enable = ?", false).Find(&lists)
 
   return lists
 }
