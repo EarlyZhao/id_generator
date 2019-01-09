@@ -6,6 +6,8 @@ import (
         "strings"
         "github.com/id_generator/middlewares"
         "reflect"
+        "time"
+        "runtime"
        )
 
 
@@ -53,7 +55,7 @@ func NewDispatcher() *Dispatcher{
 }
 
 func (h *Dispatcher) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-
+  defer captureException(rw, r)
   path := r.URL.Path
   // h.Dispatch(path)
   fmt.Println(path)
@@ -72,4 +74,30 @@ func (h *Dispatcher) AddRoute(method string, path string, handleMethod string, h
   return nil
 }
 
+func captureException(rw http.ResponseWriter, r *http.Request){
+  if err := recover(); err != nil{
+    loggingException(r, err)
+
+    rw.WriteHeader(500)
+    rw.Write([]byte(fmt.Sprintln("%v",err)))
+  }
+}
+
+func loggingException(r *http.Request, err interface{}){
+  if err == nil{
+    return
+  }
+  err_request := fmt.Sprintf("Request Error: %s %s %s : %s", r.Method, r.URL.Path, time.Now().Format("2006-01-02 15:04:05"), fmt.Sprintf("%v",err))
+  fmt.Println(err_request)
+  var stack string
+  for i := 1; ; i++ {
+    _, file, line, ok := runtime.Caller(i)
+    if !ok {
+      break
+    }
+
+    stack = stack + fmt.Sprintln(fmt.Sprintf("%s:%d", file, line))
+  }
+  fmt.Println(stack)
+}
 

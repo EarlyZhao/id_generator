@@ -57,11 +57,15 @@ func (l *List) EndAT() uint64{
   return l.EndedAT
 }
 
-func (l *List) Update(){
+func (l *List) Update() error{
+  var err error
   tx := DB.Begin()
-  if err := DB.Model(l).Update("ended_at", gorm.Expr("ended_at + ?", l.Interval)).Error; err != nil{
-    panic(err)
+  if err = DB.Model(l).Update("ended_at", gorm.Expr("ended_at + ?", l.Interval)).Error; err != nil{
+    tx.Rollback()
+    return err
   }
   DB.Where("id = ?", l.ID).Find(l)
   tx.Commit()
+
+  return err
 }

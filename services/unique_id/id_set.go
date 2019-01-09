@@ -28,11 +28,12 @@ func GetNewIdSet(count int, source interface{}) *IdSet{
 
 func (i *IdSet) Reload(count int, source interface{}){
   i.mutex.Lock()
+  defer i.mutex.Unlock()
+
   i.Count = count
   i.Set = []*Buffer{}
 
   i.fullSet(source)
-  i.mutex.Unlock()
 }
 
 func (i *IdSet) fullSet(source interface{}){
@@ -43,11 +44,11 @@ func (i *IdSet) fullSet(source interface{}){
 
 func (i *IdSet) GetId() uint64{
   i.mutex.Lock()
+  defer i.mutex.Unlock()
 
   id, duration, remain := i.Current().ReleaseId()
   i.CheckBufferCondition(duration, remain)
 
-  i.mutex.Unlock()
   return id
 }
 

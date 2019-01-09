@@ -10,9 +10,7 @@ type UniqueIdController struct{
 }
 
 func (u *UniqueIdController) Create(){
-  // u.Data["json"] = u.Context.Input.Params
-  // var business string
-  // business := u.Context.Input.Params["id"][0]
+
   business := u.Context.Input.GetString("id", "")
   id, err := unique_id.GetUniqueId(business)
   ret := make(map[string]interface{})

@@ -22,8 +22,8 @@ func (w *WareHouse) Acquire(business string) (uint64, error){
 
 func (w *WareHouse) SetHouse(business string,  set*IdSet){
   w.mutex.Lock()
+  defer w.mutex.Unlock()
   w.HouseMap[business] = set
-  w.mutex.Unlock()
 }
 
 func NewWareHouse() *WareHouse{
@@ -32,10 +32,11 @@ func NewWareHouse() *WareHouse{
 
 func (w *WareHouse) RemoveToWareHouse(business_type string){
   w.mutex.Lock()
+  defer w.mutex.Unlock()
+
   if _, ok := w.HouseMap[business_type];ok{
     delete(w.HouseMap, business_type)
   }
-  w.mutex.Unlock()
 }
 
 func (w *WareHouse) AddNewToWareHouse(business_type string, set *IdSet){

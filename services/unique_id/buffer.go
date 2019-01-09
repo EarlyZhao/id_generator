@@ -27,7 +27,7 @@ type BufferInterface interface{
   Duration() uint64
   StartAt() uint64
   EndAT() uint64
-  Update()
+  Update() error
   Usable() bool
 }
 
@@ -80,27 +80,30 @@ func (b *Buffer) GetBufferFull(){
   }
 
   b.mutex.Lock()
-  if b.Fulling == false{
-    b.BufferSource.Update()
+  defer b.mutex.Unlock()
 
+  if b.Fulling == false{
+    if err := b.BufferSource.Update(); err != nil{
+      errMsg := fmt.Sprintf("GetBufferFull Error for: %v", err)
+      fmt.Println(errMsg)
+      // if current method running in a gorouting, the panic will make the process crash
+      panic(err)
+    }
 
     b.Start = b.BufferSource.StartAt()
     b.Duration = b.BufferSource.Duration()
 
     b.End = b.BufferSource.EndAT()
     b.Current = b.End - b.Duration
-
     b.Initialized = true
-
-
     b.Cap = b.End - b.Current
-    fmt.Println("GetBufferFull At:", time.Now().String(), b.Current, b.End)
+    fmt.Println("GetBufferFull At:", time.Now().Format("2006-01-02 15:04:05"), b.Current, b.End)
+
+    // ensure just one goroutine to full buffer,
+    // until the buffer began to ReleaseId().
+    // it also represented the buffer is fulling over
+    b.Fulling = true
   }
-  // ensure just one goroutine to full buffer,
-  // until the buffer began to ReleaseId().
-  // it also represented the buffer is fulling over
-  b.Fulling = true
-  b.mutex.Unlock()
 }
 
 func (b *Buffer) timeToFull() bool{
