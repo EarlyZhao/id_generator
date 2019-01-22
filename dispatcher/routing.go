@@ -5,7 +5,6 @@ import(
   "reflect"
   "github.com/id_generator/middlewares"
   "github.com/id_generator/context"
-  "fmt"
   "strings"
   "io/ioutil"
   "encoding/json"
@@ -25,6 +24,7 @@ type ControllerInterface interface{
 func (t * RouteServe) MiddlewareCall(mr *middlewares.MiddlewareResponse, r *http.Request){
   method := r.Method
   path := r.URL.Path
+
   handler, params, controllerMethod ,err := t.routes.FindHandler(method + path)
 
   if err != nil{
@@ -46,22 +46,19 @@ func (t * RouteServe) MiddlewareCall(mr *middlewares.MiddlewareResponse, r *http
   if method == "POST" || method == "PUT" || method == "PATCH"{
     body, err := ioutil.ReadAll(r.Body)
     if err != nil{}
-    fmt.Println(string(body))
     bodyData := make(context.InputParams)
     jsonErr := json.Unmarshal(body, &bodyData)
     if jsonErr == nil{
-      fmt.Println("Unmarshalsss")
       for key_post, value_post := range(bodyData){
         httpParams[key_post] = value_post
       }
     }else{
-      fmt.Println(jsonErr)
+      mr.WriteError(jsonErr)
       mr.Res500(jsonErr.Error())
       return
     }
   }
 
-  fmt.Println(httpParams)
   context := context.NewContext()
   context.Input.Params = httpParams
   context.Input.Request = r

@@ -2,8 +2,6 @@ package middlewares
 
 import(
   "net/http"
-  "fmt"
-  // "bytes"
   )
 type Middleware interface{
   MiddlewareCall(rw *MiddlewareResponse, r *http.Request)
@@ -18,6 +16,7 @@ type MiddlewareResponse struct {
   Code int
   Headers map[string]string
   Body []byte
+  Err error
 }
 
 func (mr *MiddlewareResponse) Header(key string, value string){
@@ -33,6 +32,18 @@ func (mr *MiddlewareResponse) Res500(msg string){
   mr.SetBody([]byte(msg))
 }
 
+func (mr *MiddlewareResponse) WriteError(err error){
+  mr.Err = err
+}
+
+func (mr *MiddlewareResponse) Error() string{
+  if mr.Err ==nil{
+    return ""
+  }
+
+  return mr.Err.Error()
+}
+
 func (mr *MiddlewareResponse) WriteResponse(rw http.ResponseWriter){
   for key , value := range(mr.Headers){
     rw.Header().Add(key, value)
@@ -40,7 +51,6 @@ func (mr *MiddlewareResponse) WriteResponse(rw http.ResponseWriter){
 
   rw.WriteHeader(mr.Code)
 
-  fmt.Println("")
   if len(mr.Body) > 0{
     rw.Write(mr.Body)
   }

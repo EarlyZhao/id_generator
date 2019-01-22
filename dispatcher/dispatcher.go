@@ -55,16 +55,16 @@ func NewDispatcher() *Dispatcher{
 }
 
 func (h *Dispatcher) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-  defer captureException(rw, r)
-  path := r.URL.Path
-  // h.Dispatch(path)
-  fmt.Println(path)
+  start := time.Now()
+  defer captureException(rw, r) // deal the errors that unexpected, prevention for crashing
+
   mR := middlewares.NewMiddlewareResponse()
   for _, middleware := range(h.Middleware){
     middleware.MiddlewareCall(mR, r)
   }
 
   mR.WriteResponse(rw)
+  logging(mR, r, start)
 }
 
 
@@ -87,7 +87,7 @@ func loggingException(r *http.Request, err interface{}){
   if err == nil{
     return
   }
-  err_request := fmt.Sprintf("Request Error: %s %s %s : %s", r.Method, r.URL.Path, time.Now().Format("2006-01-02 15:04:05"), fmt.Sprintf("%v",err))
+  err_request := fmt.Sprintf("Request Error: %s %s %s : %s", r.Method, r.URL, time.Now().Format("2006-01-02 15:04:05"), fmt.Sprintf("%v",err))
   fmt.Println(err_request)
   var stack string
   for i := 1; ; i++ {
@@ -99,5 +99,10 @@ func loggingException(r *http.Request, err interface{}){
     stack = stack + fmt.Sprintln(fmt.Sprintf("%s:%d", file, line))
   }
   fmt.Println(stack)
+}
+
+func logging(mr *middlewares.MiddlewareResponse, r *http.Request, start time.Time){
+  str := fmt.Sprintf("%s %s %s %d %s  %s", r.Method, r.URL, time.Now().Format("2006-01-02~15:04:05"), mr.Code, time.Now().Sub(start).String(), mr.Error())
+  fmt.Println(str)
 }
 

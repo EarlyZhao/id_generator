@@ -6,8 +6,6 @@ import(
   "strings"
   "errors"
   "reflect"
-  // "github.com/id_generator/middlewares"
-  // "net/http"
 )
 // TrieTree
 type Tree struct{
@@ -17,7 +15,6 @@ type Tree struct{
 
 
 func (t *Tree) Add(path string, handleMethod string, handler interface{}) error{
-
   keys := CreateKeys(path)
   var pre *Node
   current := t.Root
@@ -62,7 +59,6 @@ func (t *Tree) Add(path string, handleMethod string, handler interface{}) error{
 
 func (t *Tree) FindHandler(path string) (interface{}, map[string]string, string, error){
   keys := CreateKeys(path)
-  fmt.Println(keys)
   current := t.Root
   params := make(map[string]string)
 
@@ -91,6 +87,6 @@ func (t *Tree) FindHandler(path string) (interface{}, map[string]string, string,
 
 func CreateKeys(path string) []string{
   path = strings.Trim(path, "/")
-    keys := strings.Split(path, "/")
-    return keys
+  keys := strings.Split(path, "/")
+  return keys
 }
