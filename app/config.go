@@ -4,6 +4,7 @@ package app
 import(
   "github.com/id_generator/helpers"
   "fmt"
+  "github.com/id_generator/logs"
 )
 
 
@@ -36,7 +37,7 @@ type AppConfig struct{
   Pg *DbConfig
 }
 
-
+type ConfigType map[interface{}]interface{}
 
 func NewServerConfig() *ServerConfig{
   return &ServerConfig{}
@@ -44,6 +45,11 @@ func NewServerConfig() *ServerConfig{
 
 func NewAppConfig() *AppConfig{
   return &AppConfig{}
+}
+
+func NewLogger(config ConfigType){
+  logger := logs.NewConsoleLogger() // todo: from config file
+  logs.ConfigLogging(logger)
 }
 
 func NewConfig() *Config{
@@ -54,7 +60,7 @@ func NewConfig() *Config{
 }
 
 // must be excuted after App initilized
-func WriteConfig(config map[interface{}]interface{}){
+func WriteConfig(config ConfigType){
   App.Config.Server.Addr = config["addr"].(string)
   App.Config.Server.Port = config["port"].(string)
   App.Config.Server.Daemon = config["daemon"].(bool)
@@ -70,17 +76,14 @@ func WriteConfig(config map[interface{}]interface{}){
     App.Config.Server.LogPath = config["log_path"].(string)
     App.Config.Server.PidPath = config["pid_path"].(string)
   }
+
+  NewLogger(config)
 }
 
 func (c *Config) RunAddr() string{
   return c.Server.Addr + ":" + c.Server.Port
 }
 
-// func (c *AppConfig) GetDbConfig() (value map[interface{}]interface{}){
-//   // value, _ = c.Value[key].(map[interface{}]interface{})
-//   value["database"] = c.Database
-//   return value
-// }
 
 
 

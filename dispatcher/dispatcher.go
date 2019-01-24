@@ -8,6 +8,7 @@ import (
         "reflect"
         "time"
         "runtime"
+        "github.com/id_generator/logs"
        )
 
 
@@ -34,8 +35,6 @@ func (h *Dispatcher) Ready(){
       middlewareElem := reflect.ValueOf(middleware).Elem()
       bridgeField := middlewareElem.FieldByName("Bridge")
       bridgeField.Set(reflect.ValueOf(inMiddlware))
-      // elemField := execElem.FieldByName(fieldType.Name)
-      // middleware.(reflect.TypeOf(middleware)).Bridge = inMiddlware
       inMiddlware = middleware
     }
 
@@ -103,6 +102,6 @@ func loggingException(r *http.Request, err interface{}){
 
 func logging(mr *middlewares.MiddlewareResponse, r *http.Request, start time.Time){
   str := fmt.Sprintf("%s %s %s %d %s  %s", r.Method, r.URL, time.Now().Format("2006-01-02~15:04:05"), mr.Code, time.Now().Sub(start).String(), mr.Error())
-  fmt.Println(str)
+  logs.Info(str)
 }
 

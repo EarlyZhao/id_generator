@@ -20,7 +20,7 @@ func main() {
   var max_procs   = flag.Int("max_procs", 0, "the max count of goroutings that parallel running")
   flag.Parse()
 
-  config := make(map[interface{}]interface{})
+  config := make(app.ConfigType)
 
   config["addr"] = *addr
   config["port"] = *port
