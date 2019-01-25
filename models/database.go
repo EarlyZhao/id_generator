@@ -5,7 +5,7 @@ import (
   // _ "github.com/jinzhu/gorm/dialects/postgres"
   _ "github.com/jinzhu/gorm/dialects/mysql"
   "fmt"
-  "github.com/id_generator/app"
+  "github.com/id_generator/conf"
 )
 
 var DB *gorm.DB
@@ -19,18 +19,23 @@ func init(){
 func connectionToDB(){
   // wait for app filished init process
   // database connection need the config data
-  <- app.App.InitOver
+  <- conf.ConfigInitOverForDb
 
   var err error
-  config_db := app.App.Config.Run.Database
-  fmt.Println(config_db)
+  var dbUrl string
+  config_db := conf.Config.Database
+
   if config_db == "mysql"{
-    DB, err = gorm.Open("mysql", mysqlConnectionUrl())
+    dbUrl = mysqlConnectionUrl()
+    DB, err = gorm.Open("mysql", dbUrl)
   }else{
     // todo: pg
   }
 
   if err != nil{
+    fmt.Println(conf.Config.Database)
+    fmt.Println(conf.Config.Mysql)
+    fmt.Println(dbUrl)
     panic(err)
   }
   // todo:
@@ -41,7 +46,7 @@ func connectionToDB(){
 }
 
 func mysqlConnectionUrl() string{
-  config := app.App.Config.Run
+  config := conf.Config
 
   user     := config.Mysql.Username
   password := config.Mysql.Password
@@ -52,6 +57,6 @@ func mysqlConnectionUrl() string{
   database  := config.Mysql.Database
 
   dbUrl := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local", user, password, url, database)
-  fmt.Println(dbUrl)
+
   return dbUrl
 }

@@ -2,49 +2,29 @@ package app
 
 
 import(
-  "github.com/id_generator/helpers"
-  "fmt"
   "github.com/id_generator/logs"
+  "github.com/id_generator/conf"
 )
 
 
 type Config struct{
   Server *ServerConfig
-  Run *AppConfig
 }
 
 
 type ServerConfig struct{
   Addr string
   Port string
+  RunAs string
   Daemon bool
   LogPath string
   PidPath string
-}
-
-type DbConfig struct{
-  Host string
-  Port int
-  Username string
-  Password string
-  Database string
-}
-
-type AppConfig struct{
-  Secret string
-  Database string
-  Mysql *DbConfig
-  Pg *DbConfig
 }
 
 type ConfigType map[interface{}]interface{}
 
 func NewServerConfig() *ServerConfig{
   return &ServerConfig{}
-}
-
-func NewAppConfig() *AppConfig{
-  return &AppConfig{}
 }
 
 func NewLogger(config ConfigType){
@@ -55,7 +35,6 @@ func NewLogger(config ConfigType){
 func NewConfig() *Config{
   return &Config{
     Server: NewServerConfig(),
-    Run: NewAppConfig(),
   }
 }
 
@@ -64,15 +43,12 @@ func WriteConfig(config ConfigType){
   App.Config.Server.Addr = config["addr"].(string)
   App.Config.Server.Port = config["port"].(string)
   App.Config.Server.Daemon = config["daemon"].(bool)
-
+  App.Config.Server.RunAs = config["run"].(string)
   config_path := config["conf_path"].(string)
-  var run AppConfig
-  helpers.ReadConfig(config_path, &run) //.(*AppConfig)
 
-  App.Config.Run = &run
-  fmt.Println(App.Config.Run.Mysql)
+  conf.ReadConfig(config_path)
 
-  if App.Config.Server.Daemon{
+  if App.Config.Server.Daemon{ // todo: delete it
     App.Config.Server.LogPath = config["log_path"].(string)
     App.Config.Server.PidPath = config["pid_path"].(string)
   }

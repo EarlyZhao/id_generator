@@ -1,0 +1,18 @@
+
+
+syntax = "proto3";
+
+package id_rpc;
+
+message BusinessType {
+  string name = 1;
+}
+
+message UniqueId {
+  uint64 id = 1;
+  string business_type = 2;
+}
+
+service UniqueIdService {
+  rpc MakeUniqueId(BusinessType) returns (UniqueId){}
+}

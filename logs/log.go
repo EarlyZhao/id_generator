@@ -49,6 +49,10 @@ func init(){
 }
 
 func Info(msg string){
+  if Log == nil{
+    ConfigLogging(NewConsoleLogger())
+  }
+
   Log.info(msg)
 }
 
@@ -74,7 +78,6 @@ func ConfigLogging(output Logger){
   }
 
   // Log.Async() // todo: from config
-
 }
 
 func (l *Logging) Async(){

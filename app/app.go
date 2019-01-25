@@ -2,7 +2,14 @@ package app
 
 import(
   "net/http"
+  "net"
   "github.com/id_generator/dispatcher"
+  grpc "google.golang.org/grpc"
+  "github.com/id_generator/services/unique_id"
+  "github.com/id_generator/grpc/id_rpc"
+  "github.com/id_generator/logs"
+  "fmt"
+  "strings"
 )
 
 var App *Application
@@ -33,16 +40,29 @@ func NewApp() *Application{
 }
 
 func Run(){
-  App.Server.ListenAndServe()
+
+  if strings.ToUpper(App.Config.Server.RunAs) == "GRPC"{
+    lis, err := net.Listen("tcp", App.Config.RunAddr())
+    if err != nil {
+      panic(fmt.Sprintf("gRPC failed to listen: %v", err))
+    }
+
+    s := grpc.NewServer()
+    id_rpc.RegisterUniqueIdServiceServer(s, &unique_id.UniqueIdRpcService{})
+
+    logs.Info("gRPC Listening on "  + App.Config.RunAddr())
+    s.Serve(lis)
+  }else{
+    logs.Info("HTTP Listening on " + App.Config.RunAddr())
+    App.Server.ListenAndServe()
+  }
+
 }
 
 func Ready(config map[interface{}]interface{}){
   WriteConfig(config)
   App.Dispatcher.Ready()
   App.Server.Addr = App.Config.RunAddr()
-
-  // the goroutings that wait for App filished init process, stop blocking now
-  App.InitOver <- true
 }
 
 func AddRoute(method string, path string, handleMethod string, handler interface{}) error {
