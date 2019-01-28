@@ -41,7 +41,7 @@ func UpdateWareHouse(business_type string){
 }
 
 func GetUniqueId(business string) (uint64, error) {
-  // acquire a id from data set
+  // acquire an id from data set
   id, err := House.Acquire(business)
   return id, err
 }

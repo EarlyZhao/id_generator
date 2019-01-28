@@ -2,7 +2,7 @@
 
 Under development now.
 
-This is a ID generator, to get ID uniquely and increasingly.
+This is an ID generator, to get ID uniquely and increasingly.
 
 ## How
 	- Use Golang to distribute ids concurrently

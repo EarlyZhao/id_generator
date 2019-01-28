@@ -1,4 +1,4 @@
-// This is a example for client who will call the `MakeUniqueId`
+// This is an example for client who will call the `MakeUniqueId`
 
 package main
 
