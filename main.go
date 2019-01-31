@@ -18,7 +18,7 @@ func main() {
   var config_path = flag.String("config_path", "", "the config file path")
   var daemon      = flag.Bool("daemon", false, "run as daemon")
   var max_procs   = flag.Int("max_procs", 0, "the max count of goroutings that parallel running")
-  var run   = flag.String("run", "http", "http|grpc, the server run as HTTP or gRPC")
+  var run         = flag.String("run", "http", "http|grpc, the server run as HTTP or gRPC")
   flag.Parse()
 
   config := make(app.ConfigType)

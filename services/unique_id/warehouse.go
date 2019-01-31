@@ -40,7 +40,5 @@ func (w *WareHouse) RemoveToWareHouse(business_type string){
 }
 
 func (w *WareHouse) AddNewToWareHouse(business_type string, set *IdSet){
-  House.SetHouse(business_type, set)
+  w.SetHouse(business_type, set)
 }
-
-// func (w *WareHouse)
