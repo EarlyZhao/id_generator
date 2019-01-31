@@ -39,8 +39,7 @@ func (t *Tree) Add(path string, handleMethod string, handler interface{}) error{
   for _, node := range(pre.Children){
     parameter_node := node.Parameter || current.Parameter
     if node.PathEnd && parameter_node{
-      fmt.Println("There was a Path that conflict with %s", path)
-      panic("path conflict!")
+      panic(fmt.Sprintf("There was a Path that conflict with %s \n", path))
     }
   }
 
@@ -49,8 +48,7 @@ func (t *Tree) Add(path string, handleMethod string, handler interface{}) error{
   reflectValue := reflect.ValueOf(handler)
   reflectMethod := reflectValue.MethodByName(handleMethod)
   if reflectMethod.IsValid() == false{
-    fmt.Printf("%v Not Has Method: %s", handler, handleMethod)
-    panic("")
+    panic(fmt.Sprintf("%v Not Has Method: %s", handler, handleMethod))
   }
   current.HandleMethod = handleMethod
   return nil
