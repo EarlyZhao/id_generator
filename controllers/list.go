@@ -5,6 +5,7 @@ import(
   "fmt"
   "github.com/id_generator/helpers"
   "github.com/id_generator/services/unique_id"
+  "github.com/id_generator/conf"
 )
 
 type ListController struct{
@@ -12,6 +13,7 @@ type ListController struct{
 }
 
 func (l *ListController) Create(){
+  l.permissionCheck()
   business_type := l.MustGetString("business_type", "business_type Must be valid")
   business_desc := l.Context.Input.GetString("business_desc", "")
   interval := l.MustGetInt("interval", "interval: need a number")
@@ -48,13 +50,14 @@ func (l *ListController) Index(){
 }
 
 func (l *ListController) Update(){
+  l.permissionCheck()
   var ret string
   business_type := l.MustGetString("business_type", "business_type Must be valid")
   business_desc := l.Context.Input.GetString("business_desc", "")
-
   enable := l.MustGetString("enable", "start_at: need a number of string")
   list := &models.List{}
   models.DB.Where("business_type = ?", business_type).First(list)
+
   // disable
   if enable == "0"{
     list.Enable = false
@@ -101,4 +104,9 @@ func (l *ListController) Update(){
 
   l.Data["json"] = helpers.NewSuccessRet(list)
   unique_id.UpdateWareHouse(list.BusinessType)
+}
+
+func (l *ListController) permissionCheck(){
+  token := l.MustGetString("access_token", "access_token Must be valid")
+  l.MustEqual(token, conf.Config.Secret, "Your access_token is invalid")
 }

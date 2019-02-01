@@ -63,7 +63,6 @@ func (c *Controller) RecoverFunc(context *context.Context){
 
 func (c *Controller) MustGetString(key string, msg string) string{
   value := c.Context.Input.GetString(key, "")
-  fmt.Println(value)
   if value != ""{
     return value
   }
@@ -82,6 +81,12 @@ func (c *Controller) MustGetInt(key string, msg string) uint64{
 
   c.RaiseParamsError(msg)
   return ret
+}
+
+func (c *Controller) MustEqual(value interface{}, compare interface{}, msg string){
+  if value == compare{ return }
+
+  c.RaiseParamsError(msg)
 }
 
 func (c *Controller) RaiseParamsError(msg string){
