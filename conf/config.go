@@ -6,9 +6,11 @@ import(
 var Config AppConfig
 var ConfigInitOverForDb chan bool
 var ConfigInit bool
+var Run *RunConfig
 
 func init(){
   ConfigInitOverForDb = make(chan bool, 1) // no blocking for ReadConfig
+  Run = &RunConfig{Logging: true}
 }
 
 
@@ -27,10 +29,23 @@ type DbConfig struct{
   Database string
 }
 
+type RunConfig struct{
+  Logging bool
+  Mode int
+}
+
 func ReadConfig(path string){
   if ConfigInit{ return }
   helpers.ReadConfig(path, &Config) //.(*AppConfig)
 
   ConfigInit = true
   ConfigInitOverForDb <- true
+}
+
+func SetLogging(f bool){
+  Run.Logging = f
+}
+
+func Logging() bool{
+  return Run.Logging
 }

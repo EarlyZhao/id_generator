@@ -9,6 +9,7 @@ import (
         "time"
         "runtime"
         "github.com/id_generator/logs"
+        "github.com/id_generator/conf"
        )
 
 
@@ -63,7 +64,10 @@ func (h *Dispatcher) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
   }
 
   mR.WriteResponse(rw)
-  logging(mR, r, start)
+
+  if conf.Logging(){
+    logging(mR, r, start)
+  }
 }
 
 
@@ -86,8 +90,8 @@ func loggingException(r *http.Request, err interface{}){
   if err == nil{
     return
   }
-  err_request := fmt.Sprintf("Request Error: %s %s %s : %s", r.Method, r.URL, time.Now().Format("2006-01-02 15:04:05"), fmt.Sprintf("%v",err))
-  fmt.Println(err_request)
+  err_request := fmt.Sprintf("Request Error: %s %s %s : %s \n", r.Method, r.URL, time.Now().Format("2006-01-02 15:04:05"), fmt.Sprintf("%v",err))
+
   var stack string
   for i := 1; ; i++ {
     _, file, line, ok := runtime.Caller(i)
@@ -97,7 +101,8 @@ func loggingException(r *http.Request, err interface{}){
 
     stack = stack + fmt.Sprintln(fmt.Sprintf("%s:%d", file, line))
   }
-  fmt.Println(stack)
+
+  logs.Error(err_request + stack)
 }
 
 func logging(mr *middlewares.MiddlewareResponse, r *http.Request, start time.Time){

@@ -46,13 +46,21 @@ func init(){
       return &LogMsg{}
     },
   }
+
+  ConfigLogging(NewConsoleLogger())
+}
+
+func Error(msg string){
+  logMsg := msgPool.Get().(*LogMsg)
+
+  logMsg.level = LogLevelError
+  logMsg.msg = msg
+  logMsg.time = time.Now()
+
+  Log.logging(logMsg)
 }
 
 func Info(msg string){
-  if Log == nil{
-    ConfigLogging(NewConsoleLogger())
-  }
-
   Log.info(msg)
 }
 
@@ -63,6 +71,10 @@ func (l *Logging) info(msg string){
   logMsg.msg = msg
   logMsg.time = time.Now()
 
+  l.logging(logMsg)
+}
+
+func (l *Logging) logging(logMsg *LogMsg){
   if l.asynchronous{
     l.msgChan <- logMsg
   }else{

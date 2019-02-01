@@ -40,7 +40,7 @@ func NewApp() *Application{
 }
 
 func Run(){
-
+  var err error
   if strings.ToUpper(App.Config.Server.RunAs) == "GRPC"{
     lis, err := net.Listen("tcp", App.Config.RunAddr())
     if err != nil {
@@ -51,10 +51,15 @@ func Run(){
     id_rpc.RegisterUniqueIdServiceServer(s, &unique_id.UniqueIdRpcService{})
 
     logs.Info("gRPC Listening on "  + App.Config.RunAddr())
-    s.Serve(lis)
+
+    if err = s.Serve(lis); err != nil{
+      panic(err)
+    }
   }else{
     logs.Info("HTTP Listening on " + App.Config.RunAddr())
-    App.Server.ListenAndServe()
+    if err = App.Server.ListenAndServe(); err != nil{
+      panic(err)
+    }
   }
 
 }
