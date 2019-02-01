@@ -78,7 +78,7 @@ func captureException(rw http.ResponseWriter, r *http.Request){
     loggingException(r, err)
 
     rw.WriteHeader(500)
-    rw.Write([]byte(fmt.Sprintln("%v",err)))
+    rw.Write([]byte(fmt.Sprintln(err)))
   }
 }
 
