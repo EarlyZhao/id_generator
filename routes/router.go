@@ -2,8 +2,8 @@ package routes
 
 
 import(
-        "github.com/id_generator/app"
-        "github.com/id_generator/controllers"
+        "github.com/EarlyZhao/id_generator/app"
+        "github.com/EarlyZhao/id_generator/controllers"
 )
 
 

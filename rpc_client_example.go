@@ -1,10 +1,10 @@
 // This is an example for client who will call the `MakeUniqueId`
 
-package client_example
+package main
 
 import(
   grpc "google.golang.org/grpc"
-  "github.com/id_generator/grpc/id_rpc"
+  "github.com/EarlyZhao/id_generator/grpc/id_rpc"
   ctx "context"
   "fmt"
   "os"

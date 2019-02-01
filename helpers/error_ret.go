@@ -2,7 +2,7 @@ package helpers
 
 
 import(
-  "github.com/id_generator/sys_errors"
+  "github.com/EarlyZhao/id_generator/sys_errors"
 )
 type ErrorRet struct{
   Status int `json:"status"`

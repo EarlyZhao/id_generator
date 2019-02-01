@@ -2,7 +2,7 @@ package unique_id
 
 import(
   "testing"
-  "github.com/id_generator/test"
+  "github.com/EarlyZhao/id_generator/test"
 )
 
 type TestList struct{

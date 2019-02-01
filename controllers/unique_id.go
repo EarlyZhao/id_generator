@@ -1,8 +1,8 @@
 package controllers
 
 import(
-    "github.com/id_generator/services/unique_id"
-    "github.com/id_generator/helpers"
+    "github.com/EarlyZhao/id_generator/services/unique_id"
+    "github.com/EarlyZhao/id_generator/helpers"
 )
 
 type UniqueIdController struct{

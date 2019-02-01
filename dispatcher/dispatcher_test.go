@@ -2,8 +2,8 @@ package dispatcher
 
 import(
   "testing"
-  "github.com/id_generator/test"
-  "github.com/id_generator/context"
+  "github.com/EarlyZhao/id_generator/test"
+  "github.com/EarlyZhao/id_generator/context"
   )
 
 

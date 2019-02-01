@@ -2,8 +2,8 @@ package main
 
 
 import(
-        "github.com/id_generator/app"
-        _ "github.com/id_generator/routes"
+        "github.com/EarlyZhao/id_generator/app"
+        _ "github.com/EarlyZhao/id_generator/routes"
         "flag"
         "fmt"
         "runtime"

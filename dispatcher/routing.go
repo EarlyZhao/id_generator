@@ -3,8 +3,8 @@ package dispatcher
 import(
   "net/http"
   "reflect"
-  "github.com/id_generator/middlewares"
-  "github.com/id_generator/context"
+  "github.com/EarlyZhao/id_generator/middlewares"
+  "github.com/EarlyZhao/id_generator/context"
   "strings"
   "io/ioutil"
   "encoding/json"

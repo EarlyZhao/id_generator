@@ -1,8 +1,8 @@
 package unique_id
 
 import(
-  "github.com/id_generator/models"
-  "github.com/id_generator/conf"
+  "github.com/EarlyZhao/id_generator/models"
+  "github.com/EarlyZhao/id_generator/conf"
   "fmt"
 )
 

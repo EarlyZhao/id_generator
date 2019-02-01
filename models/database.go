@@ -5,7 +5,7 @@ import (
   // _ "github.com/jinzhu/gorm/dialects/postgres"
   _ "github.com/jinzhu/gorm/dialects/mysql"
   "fmt"
-  "github.com/id_generator/conf"
+  "github.com/EarlyZhao/id_generator/conf"
 )
 
 var DB *gorm.DB

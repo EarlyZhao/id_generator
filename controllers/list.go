@@ -1,11 +1,11 @@
 package controllers
 
 import(
-  "github.com/id_generator/models"
+  "github.com/EarlyZhao/id_generator/models"
   "fmt"
-  "github.com/id_generator/helpers"
-  "github.com/id_generator/services/unique_id"
-  "github.com/id_generator/conf"
+  "github.com/EarlyZhao/id_generator/helpers"
+  "github.com/EarlyZhao/id_generator/services/unique_id"
+  "github.com/EarlyZhao/id_generator/conf"
 )
 
 type ListController struct{

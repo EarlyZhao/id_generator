@@ -1,8 +1,8 @@
 package unique_id
 
 import(
-  "github.com/id_generator/grpc/id_rpc"
-  "github.com/id_generator/logs"
+  "github.com/EarlyZhao/id_generator/grpc/id_rpc"
+  "github.com/EarlyZhao/id_generator/logs"
   ctx "context"
   "fmt"
 )

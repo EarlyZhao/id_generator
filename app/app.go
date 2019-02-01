@@ -3,11 +3,11 @@ package app
 import(
   "net/http"
   "net"
-  "github.com/id_generator/dispatcher"
+  "github.com/EarlyZhao/id_generator/dispatcher"
   grpc "google.golang.org/grpc"
-  "github.com/id_generator/services/unique_id"
-  "github.com/id_generator/grpc/id_rpc"
-  "github.com/id_generator/logs"
+  "github.com/EarlyZhao/id_generator/services/unique_id"
+  "github.com/EarlyZhao/id_generator/grpc/id_rpc"
+  "github.com/EarlyZhao/id_generator/logs"
   "fmt"
   "strings"
 )

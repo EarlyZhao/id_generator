@@ -4,12 +4,12 @@ import (
         "fmt"
         "net/http"
         "strings"
-        "github.com/id_generator/middlewares"
+        "github.com/EarlyZhao/id_generator/middlewares"
         "reflect"
         "time"
         "runtime"
-        "github.com/id_generator/logs"
-        "github.com/id_generator/conf"
+        "github.com/EarlyZhao/id_generator/logs"
+        "github.com/EarlyZhao/id_generator/conf"
        )
 
 

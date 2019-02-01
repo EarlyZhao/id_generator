@@ -1,7 +1,7 @@
 package conf
 
 import(
-  "github.com/id_generator/helpers"
+  "github.com/EarlyZhao/id_generator/helpers"
 )
 var Config AppConfig
 var ConfigInitOverForDb chan bool

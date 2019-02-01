@@ -2,8 +2,8 @@ package app
 
 
 import(
-  "github.com/id_generator/logs"
-  "github.com/id_generator/conf"
+  "github.com/EarlyZhao/id_generator/logs"
+  "github.com/EarlyZhao/id_generator/conf"
 )
 
 

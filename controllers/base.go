@@ -2,11 +2,11 @@ package controllers
 
 import(
   "net/http"
-  "github.com/id_generator/context"
+  "github.com/EarlyZhao/id_generator/context"
   "encoding/json"
   "fmt"
-  "github.com/id_generator/sys_errors"
-  "github.com/id_generator/helpers"
+  "github.com/EarlyZhao/id_generator/sys_errors"
+  "github.com/EarlyZhao/id_generator/helpers"
   // "strconv"
 )
 

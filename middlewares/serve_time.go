@@ -1,6 +1,6 @@
 package middlewares
 
-// import "github.com/id_generator/middlewate"
+// import "github.com/EarlyZhao/id_generator/middlewate"
 
 import(
       "time"
