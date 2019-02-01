@@ -2,6 +2,8 @@ package unique_id
 
 import(
   "github.com/id_generator/models"
+  "github.com/id_generator/conf"
+  "fmt"
 )
 
 // generate ID uniquely and increasingly
@@ -18,8 +20,10 @@ func initWareHouse(){
   lists := models.GetAllList()
   // create id set for every business
   House = NewWareHouse()
+  buffersCount := conf.Config.Buffers
+  fmt.Println("\nBuffer count:", buffersCount)
   for _, list := range(lists){
-    set := GetNewIdSet(2, list)
+    set := GetNewIdSet(buffersCount, list)
     House.AddNewToWareHouse(list.BusinessType, set)
   }
 }

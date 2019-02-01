@@ -1,5 +1,6 @@
 secret: "this-is-a-secret-token-for-setup-data"
 
+buffers: 2
 database: "mysql" # or pg
 
 mysql:

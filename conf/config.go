@@ -16,6 +16,7 @@ func init(){
 
 type AppConfig struct{
   Secret string
+  Buffers int // the count of buffers
   Database string
   Mysql *DbConfig
   Pg *DbConfig
@@ -38,6 +39,8 @@ func ReadConfig(path string){
   if ConfigInit{ return }
   helpers.ReadConfig(path, &Config) //.(*AppConfig)
 
+  setDefault()
+
   ConfigInit = true
   ConfigInitOverForDb <- true
 }
@@ -48,4 +51,10 @@ func SetLogging(f bool){
 
 func Logging() bool{
   return Run.Logging
+}
+
+func setDefault(){
+  if Config.Buffers < 2{
+    Config.Buffers = 2
+  }
 }
