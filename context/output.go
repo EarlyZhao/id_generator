@@ -26,3 +26,7 @@ func (o *Output) ContentJson(){
 func (o *Output) SetBody(value []byte){
   o.Response.SetBody(value)
 }
+
+func (o *Output) SetCode(code int){
+  o.Response.Code = code
+}

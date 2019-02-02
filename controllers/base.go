@@ -16,6 +16,19 @@ type Controller struct{
   Context *context.Context
 }
 
+var recoverErrors []error
+
+func init(){
+  recoverErrors = make([]error, 5)
+
+  AppendRecoverErrors(sys_errors.ParamsError)
+  AppendRecoverErrors(sys_errors.AbortError)
+}
+
+func AppendRecoverErrors(err error){
+  recoverErrors = append(recoverErrors, err)
+}
+
 func (c *Controller) Init(context *context.Context){
   c.Context = context
   c.Data = make(map[interface{}]interface{})
@@ -47,8 +60,10 @@ func (c * Controller) SetJsonBody(body []byte){
 
 func (c *Controller) RecoverFunc(context *context.Context){
   if err := recover(); err != nil{
-    if err == sys_errors.ParamsError{
-      return
+    for _, e := range(recoverErrors){
+      if err == e{
+        return
+      }
     }
 
     panic(err)
@@ -88,6 +103,19 @@ func (c *Controller) RaiseParamsError(msg string){
   c.SetJsonBody(data)
 
   panic(sys_errors.ParamsError)
+}
+
+func (c *Controller) Abort(code ...int){
+  var httpCode int
+  if len(code) == 0{
+    httpCode = 500
+  }else{
+    httpCode = code[0]
+  }
+
+  c.Context.Output.SetCode(httpCode)
+  c.Done()
+  panic(sys_errors.AbortError)
 }
 
 

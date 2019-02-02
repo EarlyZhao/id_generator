@@ -13,4 +13,6 @@ func init(){
   app.AddRoute("GET", "/lists", "Index", &controllers.ListController{})
   app.AddRoute("POST", "/lists", "Create", &controllers.ListController{})
   app.AddRoute("PUT", "/lists", "Update", &controllers.ListController{})
+
+  app.AddRoute("GET", "/smoking", "Smoking", &controllers.SmokingController{})
 }
