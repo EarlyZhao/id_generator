@@ -18,7 +18,7 @@ gor
 *.mprof
 
 *.pcap
-
+vendor/*
 .DS_Store
 *.log
 corpus
