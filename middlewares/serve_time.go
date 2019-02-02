@@ -1,7 +1,5 @@
 package middlewares
 
-// import "github.com/EarlyZhao/id_generator/middlewate"
-
 import(
       "time"
       "net/http"

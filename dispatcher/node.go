@@ -17,7 +17,6 @@ type Node struct{
   PathEnd bool // the endpoint of path, ex: the C is the endpoint of path /a/b/C
   Value interface{} // controller that deal the bussiness logic
   HandleMethod string
-  // T interface{} // type of Value
 }
 
 func CreateNode(key_value *string) *Node{

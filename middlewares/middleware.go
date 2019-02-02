@@ -8,7 +8,6 @@ type Middleware interface{
 }
 
 type MiddlewareBridge struct{
-  // Bridge func(rw http.ResponseWriter, r *http.Request)
   Bridge Middleware
 }
 

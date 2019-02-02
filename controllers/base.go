@@ -7,12 +7,8 @@ import(
   "fmt"
   "github.com/EarlyZhao/id_generator/sys_errors"
   "github.com/EarlyZhao/id_generator/helpers"
-  // "strconv"
 )
 
-// func (h *BaseHandler) AddHeader(key string, value interface{}){
-//  h.RequestHeaders[key] = value
-// }
 type Controller struct{
   Params map[string][]string
   Request http.Request
@@ -26,12 +22,10 @@ func (c *Controller) Init(context *context.Context){
 }
 
 func (c *Controller) Serve(){
-  // c.Context.Output.Response.Header("haha", "Nnm")
-  // c.Context.Output.Response.Body = []byte(context.Input.Params["id"][0])
+
 }
 
 func (c *Controller) Done(){ // render
-  // c.Context.Output.Response.Body = []byte(c.Data["json"].(string))
   c.JsonResponse()
 }
 

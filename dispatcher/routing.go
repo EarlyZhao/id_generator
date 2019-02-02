@@ -10,7 +10,6 @@ import(
   "encoding/json"
 )
 type RouteServe struct{
-  // middlewares.MiddlewareBridge
   routes *Tree
 }
 
