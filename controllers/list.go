@@ -54,7 +54,7 @@ func (l *ListController) Update(){
   var ret string
   business_type := l.MustGetString("business_type", "business_type Must be valid")
   business_desc := l.Context.Input.GetString("business_desc", "")
-  enable := l.MustGetString("enable", "start_at: need a number of string")
+  enable := l.MustGetString("enable", "enable: need a number of string, 1 or 0")
   list := &models.List{}
   models.DB.Where("business_type = ?", business_type).First(list)
 
