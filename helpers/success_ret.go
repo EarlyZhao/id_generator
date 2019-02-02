@@ -1,7 +1,7 @@
 package helpers
 
 type SuccessRet struct{
-  Status int `json: "status"`
+  Status int `json:"status"`
   Data interface{} `json:"data"`
 }
 
