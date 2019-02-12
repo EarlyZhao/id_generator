@@ -1,6 +1,6 @@
 
 # 分布式ID生成器
-产生整型ID，依赖关系型数据库产生ID，通过多缓冲区来实现高性能。
+产生整型ID，依赖关系型数据库产生ID，通过多缓冲区来实现高性能。支持Go 1.9 及以上版本。
 - 高性能，单机100000➕
 - 简单，不依赖Web框架，只依赖少量第三方包
 - ID连续递增(可能是弊端)
@@ -60,6 +60,26 @@ gRPC:
 // -run 默认为http
 go run main.go  -addr 127.0.0.1 -p 8080 -run grpc -config_path your_file_path.yml
 ```
+
+首次启动服务时，会通过[gorm](http://gorm.io/docs/migration.html)的Auto-Migrate功能创建核心的业务数据表：
+```sql
+lists | CREATE TABLE `lists` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `business_type` varchar(255) NOT NULL,
+  `business_desc` varchar(255) DEFAULT NULL,
+  `interval` bigint(20) DEFAULT '10000',
+  `started_at` bigint(20) DEFAULT '1',
+  `ended_at` bigint(20) DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `enable` tinyint(1) DEFAULT '1',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `business_type` (`business_type`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8
+```
+
+`ended_at`为bigint类型，可以保证ID充足。
+
 如果想关闭访问日志，可以加上`-close_log`选项来关闭，提升服务性能：
 ```go
 go run main.go  -addr 127.0.0.1 -p 8080 -close_log -config_path your_file_path.yml
@@ -135,3 +155,10 @@ curl http://127.0.0.1:8080/unique_ids/test3
 ![示例架构图](https://github.com/EarlyZhao/id_generator/blob/master/images/id_schema.jpg?raw=true)
 
 当业务类型过多时，可以通过business_type对数据库分片。
+
+由于Golang本身对fork的支持不够好，程序是以前台进程的方式启动，在实际使用时可以通过[supervisor](http://supervisord.org/)来管理。或者使用nohup：
+```shell
+go build -o id_generator main.go
+nohup  ./id_generator -config_path ~/id_generator.yml >id_generator.log &
+```
+
