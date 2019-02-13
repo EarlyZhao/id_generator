@@ -46,32 +46,28 @@ func (i *IdSet) GetId() uint64{
   i.mutex.Lock()
   defer i.mutex.Unlock()
 
-  id, duration, remain := i.Current().ReleaseId()
-  i.CheckBufferCondition(duration, remain)
+  id, empty := i.Current().ReleaseId()
+  if empty{
+    i.turnToNextBuffer()
+  }
 
   return id
 }
 
-func (i *IdSet) CheckBufferCondition(duration uint64, remain uint64) {
-  if ifSwitching(duration, remain) {
-    // need a lock, not thread safe
-    // Switch the Index of Set, to make Current() access next Buffer
-    if i.Index == i.SetIndexMax {
-      i.Index = 0
-    }else{
-      i.Index += 1
-    }
-    // ensure buffer is not empty.
-    // if the goroutine for getting buffer full, has not finished,
-    // try GetBufferFull again
-    i.Current().GetBufferFull()
+func (i *IdSet) turnToNextBuffer() {
+  // need a lock, not thread safe
+  // Switch the Index of Set, to make Current() access next Buffer
+  if i.Index == i.SetIndexMax {
+    i.Index = 0
+  }else{
+    i.Index += 1
   }
+  // ensure buffer is not empty.
+  // if the goroutine for getting buffer full, has not finished,
+  // try GetBufferFull again
+  i.Current().GetBufferFull()
 }
 
 func (i *IdSet) Current() *Buffer{
   return i.Set[i.Index]
-}
-// define the timing of switching
-func ifSwitching(duration uint64, remain uint64) bool{
-  return remain == 0
 }

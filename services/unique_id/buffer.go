@@ -44,7 +44,7 @@ func (b *Buffer) SetSource( s interface{}){
   b.BufferSource = s.(BufferInterface)
 }
 
-func (b *Buffer) ReleaseId() (id uint64, duration uint64, remaining uint64){
+func (b *Buffer) ReleaseId() ( id uint64, empty bool){
   // need a lock, or executed in a lock
   if b.Current < b.End{
     id = b.Current
@@ -52,14 +52,12 @@ func (b *Buffer) ReleaseId() (id uint64, duration uint64, remaining uint64){
     b.Current += 1  // not an atomic operation
     b.Cap = b.End - b.Current
 
-    duration = b.Duration
-    remaining =  b.Cap
-
   }else{ // Buffer was empty
     // CheckBufferCondition() will avoid this situation
   }
 
-  if b.timeToFull(){
+  empty = b.timeToFull()
+  if empty{
     go b.GetBufferFull()
   }else{ // buffer is not empty
     if b.Fulling{
@@ -69,12 +67,11 @@ func (b *Buffer) ReleaseId() (id uint64, duration uint64, remaining uint64){
     }
   }
 
-  return id, duration, remaining
+  return id, empty
 }
 
 func (b *Buffer) GetBufferFull(){
   // redundancy check, reduce mutex grabbing as much as possible
-
   if b.Fulling{  // the buffer is full now
     return
   }
@@ -101,7 +98,7 @@ func (b *Buffer) GetBufferFull(){
 
     // ensure just one goroutine to full buffer,
     // until the buffer began to ReleaseId().
-    // it also represented the buffer is fulling over
+    // it also represented the buffer was fulling over
     b.Fulling = true
   }
 }
