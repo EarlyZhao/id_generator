@@ -66,11 +66,11 @@ func TestIdSet(t *testing.T){
   index := set.Index
   current := set.Current()
 
-  set.CheckBufferCondition(100, 0)
+  set.turnToNextBuffer()
   newCurrent := set.Current()
 
-  test.MustNoEqual(t, index, set.Index, "IdSet CheckBufferCondition() failed", "")
-  test.MustNoEqual(t, current, newCurrent, "IdSet CheckBufferCondition() failed", "")
+  test.MustNoEqual(t, index, set.Index, "IdSet turnToNextBuffer() failed", "")
+  test.MustNoEqual(t, current, newCurrent, "IdSet turnToNextBuffer() failed", "")
 
   id = set.GetId()
   test.MustGreaterUint(t, id, startAt, "IdSet GetId() failed","")
@@ -80,19 +80,27 @@ func TestIdSet(t *testing.T){
 func TestBuffer(t *testing.T){
   var buffer *Buffer
   var initDuration uint64 = 1000
+  var id uint64
+  var empty bool
   list := &TestList{duration: initDuration, startAt: 0, endAt: 1000, usable: true, BusinessType: "test"}
 
   buffer = NewBuffer(0, list)
   test.MustEqual(t, buffer.BufferSource, list, "Buffer NewBuffer() failed","")
   test.MustEqual(t, buffer.Fulling, true, "Buffer NewBuffer() Fulling failed","")
 
-  id, duration, remaining := buffer.ReleaseId()
+  id, empty = buffer.ReleaseId()
   test.MustEqual(t, id, initDuration, "Buffer ReleaseId() failed","")
-  test.MustEqual(t, duration, initDuration, "","")
-  test.MustEqual(t, remaining, initDuration - 1, "","")
+  test.MustEqual(t, buffer.Duration, initDuration, "Buffer ReleaseId() failed when check duration","")
+  test.MustEqual(t, buffer.Cap, initDuration - 1, "Buffer ReleaseId() failed when check cap","")
+  test.MustEqual(t, empty, false, "Buffer ReleaseId() failed when check empty","")
 
   buffer.ReleaseId()
   test.MustGreaterUint(t, buffer.Current + buffer.Duration, buffer.End, "Buffer ReleaseId() wrong", "")
+
+  buffer.Current = buffer.End - 1
+  id, empty = buffer.ReleaseId()
+  test.MustEqual(t, empty, true, "Buffer ReleaseId() failed when check empty","")
+
   buffer.GetBufferFull()
   test.MustEqual(t, buffer.Current + buffer.Duration, buffer.End, "Buffer GetBufferFull() failed", "")
 }
