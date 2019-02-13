@@ -28,6 +28,7 @@ go get github.com/EarlyZhao/id_generator
 ```go
 dep ensure -v 
 ```
+在启动服务时可能会遇到`undefined: proto.ProtoPackageIsVersion3`问题，可参考[这个解决方案](https://github.com/golang/protobuf/issues/763#issuecomment-449856852)，手动下载合适的proto包到vendor目录。
 ## 3.创建配置文件
 配置文件用来做以下配置：
 - 数据库
