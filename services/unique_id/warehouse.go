@@ -7,11 +7,14 @@ import(
 
 type WareHouse struct {
   HouseMap map[string]*IdSet // every business type has an IdSet
-  mutex sync.Mutex
+  mutex sync.RWMutex
 }
 
 func (w *WareHouse) Acquire(business string) (uint64, error){
+  w.mutex.RLock()
   businessSet, ok := w.HouseMap[business]
+  w.mutex.RUnlock()
+
   if ok == false{
     return 0, errors.New("no business type")
   }
