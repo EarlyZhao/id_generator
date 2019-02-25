@@ -71,3 +71,4 @@ func (i *IdSet) turnToNextBuffer() {
 func (i *IdSet) Current() *Buffer{
   return i.Set[i.Index]
 }
+
