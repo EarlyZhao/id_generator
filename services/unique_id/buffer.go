@@ -29,6 +29,7 @@ type BufferInterface interface{
   EndAT() uint64
   Update() error
   Usable() bool
+  BusinessId() string
 }
 
 

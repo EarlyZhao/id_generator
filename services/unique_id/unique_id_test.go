@@ -13,11 +13,12 @@ type TestList struct{
   BusinessType string
 }
 
-func (l *TestList) Duration() uint64 { return l.duration }
-func (l *TestList) StartAt()  uint64 { return l.startAt}
-func (l *TestList) EndAT()    uint64 { return l.endAt}
-func (l *TestList) Usable()   bool   { return l.usable}
-func (l *TestList) Update()   error{
+func (l *TestList) Duration()   uint64 { return l.duration }
+func (l *TestList) StartAt()    uint64 { return l.startAt}
+func (l *TestList) EndAT()      uint64 { return l.endAt}
+func (l *TestList) Usable()     bool   { return l.usable}
+func (l *TestList) BusinessId() string { return l.BusinessType}
+func (l *TestList) Update()     error  {
   l.endAt += l.duration
   return nil
 }
@@ -30,6 +31,7 @@ func TestWareHouse(t *testing.T){
   var err error
   var id, startAt uint64 = 0, 100
 
+  House = h
   lists = append(lists, &TestList{duration: 1000, startAt: startAt, endAt: 1000, usable: true, BusinessType: testBusinessType})
 
   for _, list := range(lists){
@@ -44,9 +46,20 @@ func TestWareHouse(t *testing.T){
   test.MustEqual(t, err, nil, "WareHouse Acquire() Id failed", "")
   test.MustGreaterUint(t, id, startAt, "WareHouse Acquire() ID failed","")
 
-  h.RemoveToWareHouse(testBusinessType)
+  list := lists[0]
+  list.usable = false // RemoveToWareHouse
+
+  UpdateIdSet(list)
+  // h.RemoveToWareHouse(testBusinessType)
   _, err = h.Acquire(testBusinessType)
   test.MustNoEqual(t, err, nil, "WareHouse RemoveToWareHouse() failed", "")
+
+  list.usable = true
+  list.duration = 12345
+  list.startAt = 999999999
+  UpdateIdSet(list)
+  id, _ = h.Acquire(testBusinessType)
+  test.MustGreaterUint(t, list.startAt, id, "WareHouse UpdateIdSet failed","")
 }
 
 func TestIdSet(t *testing.T){

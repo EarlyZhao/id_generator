@@ -11,10 +11,7 @@ type WareHouse struct {
 }
 
 func (w *WareHouse) Acquire(business string) (uint64, error){
-  w.mutex.RLock()
-  businessSet, ok := w.HouseMap[business]
-  w.mutex.RUnlock()
-
+  businessSet, ok := w.Get(business)
   if ok == false{
     return 0, errors.New("no business type")
   }
@@ -45,3 +42,12 @@ func (w *WareHouse) RemoveToWareHouse(business_type string){
 func (w *WareHouse) AddNewToWareHouse(business_type string, set *IdSet){
   w.SetHouse(business_type, set)
 }
+
+func (w *WareHouse) Get(business_type string) (*IdSet, bool){
+  w.mutex.RLock()
+  businessSet, ok := w.HouseMap[business_type]
+  w.mutex.RUnlock()
+
+  return businessSet, ok
+}
+

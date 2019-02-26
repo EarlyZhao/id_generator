@@ -69,3 +69,7 @@ func (l *List) Update() error{
 
   return err
 }
+
+func (l *List) BusinessId() string{
+  return l.BusinessType
+}

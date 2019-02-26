@@ -58,3 +58,8 @@ func setDefault(){
     Config.Buffers = 2
   }
 }
+
+func BufferCount() int{
+  setDefault()
+  return Config.Buffers
+}

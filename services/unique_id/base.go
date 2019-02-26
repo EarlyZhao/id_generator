@@ -20,11 +20,11 @@ func initWareHouse(){
   lists := models.GetAllList()
   // create id set for every business
   House = NewWareHouse()
-  buffersCount := conf.Config.Buffers
+  buffersCount := conf.BufferCount()
   fmt.Println("\nBuffer count:", buffersCount)
   for _, list := range(lists){
     set := GetNewIdSet(buffersCount, list)
-    House.AddNewToWareHouse(list.BusinessType, set)
+    House.AddNewToWareHouse(list.BusinessId(), set)
   }
 }
 
@@ -32,20 +32,25 @@ func UpdateWareHouse(business_type string){
   list := &models.List{}
 
   models.DB.Where("business_type = ?", business_type).First(list)
-  if list.Usable(){
-    if set, ok := House.HouseMap[business_type];ok{
-      set.Reload(2, list)
-    }else{
-      set = GetNewIdSet(2, list)
-      House.AddNewToWareHouse(list.BusinessType, set)
-    }
-  }else{
-    House.RemoveToWareHouse(list.BusinessType)
-  }
+  UpdateIdSet(list)
 }
 
 func GetUniqueId(business string) (uint64, error) {
   // acquire an id from data set
   id, err := House.Acquire(business)
   return id, err
+}
+
+func UpdateIdSet(list BufferInterface){
+  if list.Usable(){
+    buffersCount := conf.BufferCount()
+    if set, ok := House.Get(list.BusinessId());ok{
+      set.Reload(buffersCount, list)
+    }else{
+      set = GetNewIdSet(buffersCount, list)
+      House.AddNewToWareHouse(list.BusinessId(), set)
+    }
+  }else{
+    House.RemoveToWareHouse(list.BusinessId())
+  }
 }
