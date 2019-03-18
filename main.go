@@ -28,7 +28,7 @@ func main() {
   config["logging"] = !*close_log
 
   if *config_path == ""{
-    panic("conf_path must be present")
+    panic("config_path must be present")
   }
 
   var max_count_procs int

@@ -12,6 +12,10 @@ func ReadConfig(path string, t interface{}) interface{}{
   if err != nil{
     panic(fmt.Sprintf("Read Config file error: %v",err))
   }
-  yaml.Unmarshal(data, t)
+  
+  err = yaml.Unmarshal(data, t)
+  if err != nil{
+  	panic(err)
+  }
   return t
 }
