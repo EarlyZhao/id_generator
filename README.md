@@ -96,7 +96,7 @@ go run main.go  -addr 127.0.0.1 -p 8080 -max_procs 10 -config_path your_file_pat
 curl -XPOST http://127.0.0.1:8080/lists -d '{
     "access_token": "this-is-a-secret-token-for-setup-data",
     "business_type": "test3",
-    "business_desc": "这是日志数据的ID配置"
+    "business_desc": "这是日志数据的ID配置",
     "interval": 10000,
     "start_at":2235435678
 }'
